@@ -149,9 +149,8 @@ async def account_comments(
         )
     )
 
-    if not payload.comments:
-        return response.code(codes.CommentError.NONE_FOUND)
-
+    # NOTE: Unlike level comments, an empty profile is an empty page, not -2;
+    # the client shows an error dialog for -2 here.
     return response.text(
         responses.serialise_account_comments(payload.comments, payload.page)
     )
