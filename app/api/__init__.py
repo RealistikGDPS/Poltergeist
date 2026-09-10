@@ -18,6 +18,7 @@ from . import gd
 from . import root
 from . import v1
 from .interruption import ServiceInterruptionException
+from .paths import CollapseSlashesMiddleware
 
 logger = logging.get_logger(__name__)
 
@@ -46,6 +47,7 @@ def create_app() -> FastAPI:
     initialise_boomlings(app)
     initialise_interruptions(app)
     initialise_request_tracing(app)
+    initialise_path_rewrite(app)
     create_routes(app)
 
     logger.debug("Finalised the app instance.")
@@ -97,6 +99,11 @@ def initialise_request_tracing(app: FastAPI) -> None:
             logging.clear_context()
 
     logger.debug("Initialised request tracing.")
+
+
+def initialise_path_rewrite(app: FastAPI) -> None:
+    app.add_middleware(CollapseSlashesMiddleware)
+    logger.debug("Initialised request path rewriting.")
 
 
 def create_routes(app: FastAPI) -> None:
