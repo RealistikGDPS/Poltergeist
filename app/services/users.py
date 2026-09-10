@@ -1,3 +1,4 @@
+import dataclasses
 from dataclasses import dataclass
 from enum import StrEnum
 
@@ -249,6 +250,31 @@ async def update_stats(
     ctx: AbstractContext, session: Session, request: UpdateStatsRequest
 ) -> UserError.OnSuccess[int]:
     if not requests.verify_stats_chk(request):
+        logger.warning(
+            "Stats update failed the integrity check.",
+            extra={
+                "user_id": session.user.id,
+                "binary_version": session.client.binary_version,
+                "seed2": request.seed2,
+                "stars": request.stars,
+                "moons": request.moons,
+                "demons": request.demons,
+                "diamonds": request.diamonds,
+                "secret_coins": request.secret_coins,
+                "user_coins": request.user_coins,
+                "icon_id": request.icon_id,
+                "icon_type": int(request.icon_type),
+                "icons": dataclasses.asdict(request.icons),
+                "glow": request.glow,
+                "demon_level_ids": list(request.demon_level_ids),
+                "weekly_demons": request.weekly_demons,
+                "gauntlet_demons": request.gauntlet_demons,
+                "event_demons": request.event_demons,
+                "classic": dataclasses.asdict(request.classic),
+                "platformer": dataclasses.asdict(request.platformer),
+            },
+        )
+
         return UserError.BAD_CHK
 
     if not await ctx.permissions.has(session.user.id, Permission.STATS_UPDATE):

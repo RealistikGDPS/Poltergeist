@@ -17,7 +17,9 @@ router = APIRouter()
 async def map_packs(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_map_packs(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_map_packs(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await packs.map_packs(ctx, request.page))
 
     return response.text(responses.serialise_map_packs(payload.packs, payload.page))
@@ -27,6 +29,6 @@ async def map_packs(
 async def gauntlets(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    response.parse(requests.parse_gauntlets(form), secret=Secret.COMMON)
+    response.parse(requests.parse_gauntlets(form), secret=Secret.COMMON, form=form)
 
     return response.text(responses.serialise_gauntlets(await packs.gauntlets(ctx)))

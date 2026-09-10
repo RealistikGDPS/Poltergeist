@@ -19,7 +19,7 @@ async def send_friend_request(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_send_friend_request(form), secret=Secret.COMMON
+        requests.parse_send_friend_request(form), secret=Secret.COMMON, form=form
     )
 
     response.unwrap(
@@ -36,7 +36,7 @@ async def accept_friend_request(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_accept_friend_request(form), secret=Secret.COMMON
+        requests.parse_accept_friend_request(form), secret=Secret.COMMON, form=form
     )
     response.unwrap(
         await socials.accept_friend_request(ctx, session, request.target_account_id)
@@ -50,7 +50,7 @@ async def delete_friend_requests(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_delete_friend_requests(form), secret=Secret.COMMON
+        requests.parse_delete_friend_requests(form), secret=Secret.COMMON, form=form
     )
 
     response.unwrap(
@@ -67,7 +67,7 @@ async def read_friend_request(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_read_friend_request(form), secret=Secret.COMMON
+        requests.parse_read_friend_request(form), secret=Secret.COMMON, form=form
     )
     response.unwrap(await socials.read_friend_request(ctx, session, request.request_id))
 
@@ -78,7 +78,9 @@ async def read_friend_request(
 async def friend_requests(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_friend_requests(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_friend_requests(form), secret=Secret.COMMON, form=form
+    )
 
     payload = response.unwrap(
         await socials.list_friend_requests(
@@ -98,7 +100,9 @@ async def friend_requests(
 async def remove_friend(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_block(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_block(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(
         await socials.remove_friend(ctx, session, request.target_account_id)
     )
@@ -110,7 +114,9 @@ async def remove_friend(
 async def block(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_block(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_block(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await socials.block(ctx, session, request.target_account_id))
 
     return response.success()
@@ -120,7 +126,9 @@ async def block(
 async def unblock(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_block(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_block(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await socials.unblock(ctx, session, request.target_account_id))
 
     return response.success()
@@ -130,7 +138,9 @@ async def unblock(
 async def user_list(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_user_list(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_user_list(form), secret=Secret.COMMON, form=form
+    )
     entries = response.unwrap(await socials.user_list(ctx, session, request.list_type))
 
     if not entries:
@@ -143,7 +153,9 @@ async def user_list(
 async def send_message(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_send_message(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_send_message(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await socials.send_message(ctx, session, request))
 
     return response.success()
@@ -153,7 +165,9 @@ async def send_message(
 async def messages(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_messages(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_messages(form), secret=Secret.COMMON, form=form
+    )
 
     payload = response.unwrap(
         await socials.list_messages(ctx, session, request.page, sent=request.sent)
@@ -170,7 +184,7 @@ async def download_message(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_download_message(form), secret=Secret.COMMON
+        requests.parse_download_message(form), secret=Secret.COMMON, form=form
     )
 
     message = response.unwrap(
@@ -186,7 +200,9 @@ async def download_message(
 async def delete_messages(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_delete_messages(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_delete_messages(form), secret=Secret.COMMON, form=form
+    )
 
     response.unwrap(
         await socials.delete_messages(

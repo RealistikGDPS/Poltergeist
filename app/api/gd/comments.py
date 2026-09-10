@@ -39,7 +39,9 @@ def _outcome(outcome: comments.UploadOutcome) -> Response:
 async def upload_level_comment(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_upload_comment(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_upload_comment(form), secret=Secret.COMMON, form=form
+    )
     outcome = response.unwrap(
         await comments.upload_level_comment(ctx, session, request)
     )
@@ -51,7 +53,9 @@ async def upload_level_comment(
 async def delete_level_comment(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_delete_comment(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_delete_comment(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(
         await comments.delete_level_comment(ctx, session, request.comment_id)
     )
@@ -63,7 +67,9 @@ async def delete_level_comment(
 async def level_comments(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_level_comments(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_level_comments(form), secret=Secret.COMMON, form=form
+    )
 
     payload = response.unwrap(
         await comments.list_level_comments(
@@ -83,7 +89,9 @@ async def level_comments(
 async def comment_history(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_comment_history(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_comment_history(form), secret=Secret.COMMON, form=form
+    )
 
     payload = response.unwrap(
         await comments.comment_history(
@@ -104,7 +112,7 @@ async def upload_account_comment(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_upload_account_comment(form), secret=Secret.COMMON
+        requests.parse_upload_account_comment(form), secret=Secret.COMMON, form=form
     )
     outcome = response.unwrap(
         await comments.upload_account_comment(ctx, session, request)
@@ -118,7 +126,7 @@ async def delete_account_comment(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_delete_account_comment(form), secret=Secret.COMMON
+        requests.parse_delete_account_comment(form), secret=Secret.COMMON, form=form
     )
     response.unwrap(
         await comments.delete_account_comment(ctx, session, request.comment_id)
@@ -132,7 +140,7 @@ async def account_comments(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
     request = response.parse(
-        requests.parse_account_comments(form), secret=Secret.COMMON
+        requests.parse_account_comments(form), secret=Secret.COMMON, form=form
     )
 
     payload = response.unwrap(

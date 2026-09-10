@@ -18,7 +18,9 @@ router = APIRouter()
 async def song_info(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_song_info(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_song_info(form), secret=Secret.COMMON, form=form
+    )
     song = response.unwrap(await songs.song_info(ctx, request.song_id))
 
     return response.text(responses.serialise_song_info(song))
@@ -28,7 +30,9 @@ async def song_info(
 async def top_artists(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_top_artists(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_top_artists(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await songs.top_artists(ctx, request.page))
 
     return response.text(responses.serialise_top_artists(payload.artists, payload.page))

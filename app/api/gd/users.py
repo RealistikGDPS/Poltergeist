@@ -18,7 +18,9 @@ router = APIRouter()
 async def profile(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_profile(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_profile(form), secret=Secret.COMMON, form=form
+    )
     user = response.unwrap(await users.profile(ctx, session, request.target_account_id))
 
     return response.text(responses.serialise_profile(user))
@@ -28,7 +30,9 @@ async def profile(
 async def search(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_user_search(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_user_search(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await users.search(ctx, request.query, request.page))
 
     return response.text(responses.serialise_user_search(payload.users, payload.page))
@@ -38,7 +42,9 @@ async def search(
 async def update_stats(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_update_stats(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_update_stats(form), secret=Secret.COMMON, form=form
+    )
     user_id = response.unwrap(await users.update_stats(ctx, session, request))
 
     return response.code(user_id)
@@ -48,7 +54,9 @@ async def update_stats(
 async def leaderboard(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_leaderboard(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_leaderboard(form), secret=Secret.COMMON, form=form
+    )
     rows = response.unwrap(await users.leaderboard(ctx, session, request))
 
     return response.text(
@@ -60,6 +68,6 @@ async def leaderboard(
 async def mod_access(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    response.parse(requests.parse_mod_access(form), secret=Secret.COMMON)
+    response.parse(requests.parse_mod_access(form), secret=Secret.COMMON, form=form)
 
     return response.code(await users.mod_access(ctx, session))

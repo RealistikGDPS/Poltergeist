@@ -19,7 +19,9 @@ router = APIRouter()
 
 @router.post("/accounts/loginGJAccount.php")
 async def login(form: RequiresForm, ctx: RequiresTransaction) -> Response:
-    request = response.parse(requests.parse_login(form), secret=Secret.ACCOUNT)
+    request = response.parse(
+        requests.parse_login(form), secret=Secret.ACCOUNT, form=form
+    )
     result = response.unwrap(await auth.login(ctx, request))
 
     return response.text(responses.serialise_login(result.account_id, result.user_id))
@@ -29,7 +31,9 @@ async def login(form: RequiresForm, ctx: RequiresTransaction) -> Response:
 async def register(
     form: RequiresForm, ctx: RequiresTransaction, http_request: Request
 ) -> Response:
-    request = response.parse(requests.parse_register(form), secret=Secret.ACCOUNT)
+    request = response.parse(
+        requests.parse_register(form), secret=Secret.ACCOUNT, form=form
+    )
     response.unwrap(await auth.register(ctx, request, ip=client_ip(http_request)))
 
     return response.success()
@@ -39,7 +43,9 @@ async def register(
 async def backup(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_backup(form), secret=Secret.ACCOUNT)
+    request = response.parse(
+        requests.parse_backup(form), secret=Secret.ACCOUNT, form=form
+    )
     response.unwrap(await accounts.backup(ctx, session, request))
 
     return response.success()
@@ -49,7 +55,7 @@ async def backup(
 async def sync(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    response.parse(requests.parse_sync(form), secret=Secret.ACCOUNT)
+    response.parse(requests.parse_sync(form), secret=Secret.ACCOUNT, form=form)
     payload = response.unwrap(await accounts.sync(ctx, session))
 
     return response.text(
@@ -68,7 +74,9 @@ async def sync(
 async def update_settings(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_update_settings(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_update_settings(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await accounts.update_settings(ctx, session, request))
 
     return response.success()
@@ -76,6 +84,6 @@ async def update_settings(
 
 @router.post("/getAccountURL.php")
 async def account_url(form: RequiresForm) -> Response:
-    response.parse(requests.parse_account_url(form), secret=Secret.COMMON)
+    response.parse(requests.parse_account_url(form), secret=Secret.COMMON, form=form)
 
     return response.text(accounts.account_url())

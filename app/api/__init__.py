@@ -91,7 +91,7 @@ def initialise_request_tracing(app: FastAPI) -> None:
         request: Request, call_next: Callable[[Request], Awaitable[Response]]
     ) -> Response:
         request.state.uuid = str(uuid.uuid4())
-        logging.add_context(uuid=request.state.uuid)
+        logging.add_context(uuid=request.state.uuid, path=request.url.path)
 
         try:
             return await call_next(request)

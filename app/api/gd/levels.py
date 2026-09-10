@@ -26,7 +26,9 @@ router = APIRouter()
 async def upload(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_upload_level(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_upload_level(form), secret=Secret.COMMON, form=form
+    )
     level_id = response.unwrap(await levels.upload(ctx, session, request))
 
     return response.code(level_id)
@@ -36,7 +38,9 @@ async def upload(
 async def download(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_download_level(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_download_level(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await levels.download(ctx, session, request))
 
     return response.text(
@@ -50,7 +54,9 @@ async def download(
 async def search(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_level_search(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_level_search(form), secret=Secret.COMMON, form=form
+    )
 
     payload = response.unwrap(await levels.search(ctx, session, request))
 
@@ -65,7 +71,9 @@ async def search(
 async def delete(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_delete_level(form), secret=Secret.LEVEL)
+    request = response.parse(
+        requests.parse_delete_level(form), secret=Secret.LEVEL, form=form
+    )
     response.unwrap(await levels.delete(ctx, session, request.level_id))
 
     return response.success()
@@ -76,7 +84,7 @@ async def update_description(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
     request = response.parse(
-        requests.parse_update_description(form), secret=Secret.COMMON
+        requests.parse_update_description(form), secret=Secret.COMMON, form=form
     )
 
     response.unwrap(
@@ -92,7 +100,9 @@ async def update_description(
 async def report(
     form: RequiresForm, ctx: RequiresTransaction, http_request: Request
 ) -> Response:
-    request = response.parse(requests.parse_report_level(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_report_level(form), secret=Secret.COMMON, form=form
+    )
     ip = ipaddress.ip_address(client_ip(http_request)).packed
     response.unwrap(await levels.report(ctx, request.level_id, user_id=None, ip=ip))
 
@@ -103,7 +113,9 @@ async def report(
 async def rate_stars(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_rate_stars(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_rate_stars(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await levels.rate_stars(ctx, session, request))
 
     return response.success()
@@ -113,7 +125,9 @@ async def rate_stars(
 async def suggest_stars(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_suggest_stars(form), secret=Secret.MOD)
+    request = response.parse(
+        requests.parse_suggest_stars(form), secret=Secret.MOD, form=form
+    )
     response.unwrap(await moderation.suggest_stars(ctx, session, request))
 
     return response.success()
@@ -123,7 +137,9 @@ async def suggest_stars(
 async def rate_demon(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_rate_demon(form), secret=Secret.MOD)
+    request = response.parse(
+        requests.parse_rate_demon(form), secret=Secret.MOD, form=form
+    )
     level_id = response.unwrap(await moderation.rate_demon(ctx, session, request))
 
     return response.code(level_id)
@@ -133,7 +149,9 @@ async def rate_demon(
 async def daily_level(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_timely(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_timely(form), secret=Secret.COMMON, form=form
+    )
     current = response.unwrap(await timely.current(ctx, request.timely_type))
 
     if request.timely_type is not TimelyType.EVENT:

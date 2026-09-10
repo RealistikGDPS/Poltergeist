@@ -16,7 +16,7 @@ router = APIRouter()
 async def like(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_like(form), secret=Secret.COMMON)
+    request = response.parse(requests.parse_like(form), secret=Secret.COMMON, form=form)
     response.unwrap(await likes.like(ctx, session, request))
 
     return response.success()

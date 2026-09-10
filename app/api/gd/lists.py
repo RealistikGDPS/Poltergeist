@@ -18,7 +18,9 @@ router = APIRouter()
 async def search(
     form: RequiresForm, session: RequiresSession, ctx: RequiresContext
 ) -> Response:
-    request = response.parse(requests.parse_list_search(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_list_search(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await lists.search(ctx, session, request))
 
     return response.text(
@@ -30,7 +32,9 @@ async def search(
 async def upload(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_upload_list(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_upload_list(form), secret=Secret.COMMON, form=form
+    )
     list_id = response.unwrap(await lists.upload(ctx, session, request))
 
     return response.code(list_id)
@@ -40,7 +44,9 @@ async def upload(
 async def delete(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_delete_list(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_delete_list(form), secret=Secret.COMMON, form=form
+    )
     response.unwrap(await lists.delete(ctx, session, request.list_id))
 
     return response.success()

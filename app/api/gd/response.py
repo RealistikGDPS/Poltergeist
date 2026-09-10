@@ -1,3 +1,4 @@
+from collections.abc import Mapping
 from typing import Protocol
 
 from fastapi import Response
@@ -39,11 +40,12 @@ def failure() -> Response:
 
 
 def unwrap[T](result: ServiceError.OnSuccess[T]) -> T:
-    """The only bridge from a service error to a protocol response."""
+    """The only bridge from a service error to a protocol response. The client
+    only ever sees a bare code, so the reason is logged here for operators."""
 
     if is_error(result):
-        logger.debug(
-            "Request interrupted by a service error.",
+        logger.info(
+            "Request refused.",
             extra={"error": result.resolve_name(), "code": result.code()},
         )
 
@@ -52,12 +54,18 @@ def unwrap[T](result: ServiceError.OnSuccess[T]) -> T:
     return result
 
 
-def parse[T: _HasClient](result: ParseResult[T], *, secret: Secret) -> T:
+def parse[T: _HasClient](
+    result: ParseResult[T], *, secret: Secret, form: Mapping[str, str]
+) -> T:
     """Rejects malformed forms and clients that are outdated or carry the
-    wrong secret for the endpoint."""
+    wrong secret for the endpoint. A parse failure names the endpoint and the
+    keys the client sent, since it usually means a protocol mismatch."""
 
     if is_parse_error(result):
-        logger.debug("Request form failed to parse.", extra={"error": result.value})
+        logger.warning(
+            "Request form failed to parse.",
+            extra={"error": result.value, "keys": sorted(form)},
+        )
 
         raise ServiceInterruptionException(failure())
 

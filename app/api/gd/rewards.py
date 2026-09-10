@@ -17,7 +17,9 @@ router = APIRouter()
 async def chests(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_rewards(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_rewards(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await rewards.rewards(ctx, session, request.reward_type))
 
     return response.text(
@@ -41,7 +43,9 @@ async def chests(
 async def challenges(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_challenges(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_challenges(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(await rewards.challenges(ctx, session))
 
     return response.text(
@@ -60,7 +64,9 @@ async def challenges(
 async def secret_reward(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_secret_reward(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_secret_reward(form), secret=Secret.COMMON, form=form
+    )
     payload = response.unwrap(
         await rewards.secret_reward(ctx, session, request.reward_key)
     )

@@ -16,7 +16,9 @@ router = APIRouter()
 async def _level_scores(
     form: RequiresForm, session: RequiresSession, ctx: RequiresTransaction
 ) -> Response:
-    request = response.parse(requests.parse_level_scores(form), secret=Secret.COMMON)
+    request = response.parse(
+        requests.parse_level_scores(form), secret=Secret.COMMON, form=form
+    )
     rows = response.unwrap(await scores.level_scores(ctx, session, request))
 
     if not rows:
