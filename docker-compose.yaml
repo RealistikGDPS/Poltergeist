@@ -1,0 +1,96 @@
+services:
+  mysql:
+    image: mysql:9
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    healthcheck:
+      test: "/usr/bin/mysql --user=$$MYSQL_USER --password=$$MYSQL_PASSWORD --execute \"SELECT 1;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    env_file:
+      - ./configuration/mysql.env
+    volumes:
+      - ${MYSQL_DATA_PATH}:/var/lib/mysql:z
+
+  redis:
+    image: redis:8-alpine
+    command: redis-server --save 60 1 --appendonly yes
+    healthcheck:
+      test: "redis-cli ping"
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    volumes:
+      - ${REDIS_DATA_PATH}:/data:z
+
+  migrations:
+    image: poltergeist-migrations:latest
+    build:
+      context: ./migrations
+      dockerfile: Dockerfile
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_TCP_PORT=3306
+    env_file:
+      - ./configuration/mysql.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./migrations/migrations:/migrations:ro,z
+
+  app:
+    image: poltergeist:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${APP_EXTERNAL_PORT}:80"
+    environment:
+      - APP_COMPONENT=fastapi
+      - APP_HTTP_HOST=0.0.0.0
+      - APP_HTTP_PORT=80
+      - APP_STORAGE_PATH=/app/storage
+      - MYSQL_HOST=mysql
+      - MYSQL_TCP_PORT=3306
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DATABASE=0
+    env_file:
+      - ./configuration/app.env
+      - ./configuration/mysql.env
+    volumes:
+      - ${STORAGE_DATA_PATH}:/app/storage:z
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    healthcheck:
+      test: "curl --fail http://localhost/api/v1/health/"
+      interval: 10s
+      timeout: 2s
+      retries: 3
+
+  leaderboards:
+    image: poltergeist:latest
+    profiles:
+      - tools
+    environment:
+      - APP_COMPONENT=rebuild_leaderboards
+      - APP_STORAGE_PATH=/app/storage
+      - MYSQL_HOST=mysql
+      - MYSQL_TCP_PORT=3306
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_DATABASE=0
+    env_file:
+      - ./configuration/app.env
+      - ./configuration/mysql.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
