@@ -63,6 +63,8 @@ ban-relative-imports = "parents"
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
+# The landing page is markup held in a string; its lines are not Python.
+"app/api/root.py" = ["E501"]
 
 [tool.mypy]
 strict = true

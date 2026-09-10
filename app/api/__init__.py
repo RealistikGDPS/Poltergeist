@@ -15,6 +15,7 @@ from app.adapters import storage
 from app.utilities import logging
 
 from . import gd
+from . import root
 from . import v1
 from .interruption import ServiceInterruptionException
 
@@ -99,6 +100,7 @@ def initialise_request_tracing(app: FastAPI) -> None:
 
 
 def create_routes(app: FastAPI) -> None:
+    app.include_router(root.router)
     app.include_router(gd.create_router())
     app.include_router(v1.create_router())
     logger.debug("Attached routers to the app instance.")
