@@ -135,10 +135,11 @@ async def delete_account_comment(
     return response.success()
 
 
+# NOTE: On this endpoint the client sends the target's id as `accountID` next
+# to its own `gjp2`, so the pair cannot be authenticated. Profile posts are
+# public on the official servers too.
 @router.post("/getGJAccountComments20.php")
-async def account_comments(
-    form: RequiresForm, session: RequiresSession, ctx: RequiresContext
-) -> Response:
+async def account_comments(form: RequiresForm, ctx: RequiresContext) -> Response:
     request = response.parse(
         requests.parse_account_comments(form), secret=Secret.COMMON, form=form
     )
