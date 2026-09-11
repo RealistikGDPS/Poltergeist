@@ -8,12 +8,12 @@ from gdformat import codes
 from gdformat import is_error as is_parse_error
 from gdformat.enums import Secret
 from gdformat.requests import Client
+from poltergeist_core.services import ServiceError
+from poltergeist_core.services import clients
+from poltergeist_core.services import is_error
+from poltergeist_core.utilities import logging
 
 from app.api.interruption import ServiceInterruptionException
-from app.services import ServiceError
-from app.services import clients
-from app.services import is_error
-from app.utilities import logging
 
 logger = logging.get_logger(__name__)
 

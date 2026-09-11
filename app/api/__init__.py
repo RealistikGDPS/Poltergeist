@@ -7,12 +7,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi import Request
 from fastapi import Response
-
-from app.adapters import boomlings
-from app.adapters import mysql
-from app.adapters import redis
-from app.adapters import storage
-from app.utilities import logging
+from poltergeist_core.adapters import boomlings
+from poltergeist_core.adapters import mysql
+from poltergeist_core.adapters import redis
+from poltergeist_core.adapters import storage
+from poltergeist_core.utilities import logging
 
 from . import gd
 from . import root

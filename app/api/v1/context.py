@@ -2,12 +2,12 @@ from typing import Annotated
 
 from fastapi import Depends
 from fastapi import Header
+from poltergeist_core.services import admin
 
 from app.api.context import HTTPContext
 from app.api.context import HTTPTransactionContext
 from app.api.context import transaction_context
 from app.api.v1 import response
-from app.services import admin
 
 
 def _require_admin(x_api_key: Annotated[str | None, Header()] = None) -> None:

@@ -5,13 +5,13 @@ from fastapi import Request
 from gdformat import is_error as is_parse_error
 from gdformat import requests
 from gdformat.enums import Secret
+from poltergeist_core.services import auth
+from poltergeist_core.services.auth import Session
 
 from app.api.context import HTTPContext
 from app.api.context import HTTPTransactionContext
 from app.api.context import transaction_context
 from app.api.gd import response
-from app.services import auth
-from app.services.auth import Session
 
 type Form = dict[str, str]
 

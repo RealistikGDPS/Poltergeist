@@ -2,12 +2,12 @@ from typing import Any
 
 from fastapi import Response
 from fastapi import status
+from poltergeist_core.services import ServiceError
+from poltergeist_core.services import is_error
+from poltergeist_core.utilities import logging
 from pydantic import BaseModel
 
 from app.api.interruption import ServiceInterruptionException
-from app.services import ServiceError
-from app.services import is_error
-from app.utilities import logging
 
 logger = logging.get_logger(__name__)
 

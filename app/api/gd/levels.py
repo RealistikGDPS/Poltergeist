@@ -8,6 +8,9 @@ from gdformat import responses
 from gdformat.enums import ChestType
 from gdformat.enums import Secret
 from gdformat.enums import TimelyType
+from poltergeist_core.services import levels
+from poltergeist_core.services import moderation
+from poltergeist_core.services import timely
 
 from app.api.context import client_ip
 from app.api.gd import response
@@ -15,9 +18,6 @@ from app.api.gd.context import RequiresContext
 from app.api.gd.context import RequiresForm
 from app.api.gd.context import RequiresSession
 from app.api.gd.context import RequiresTransaction
-from app.services import levels
-from app.services import moderation
-from app.services import timely
 
 router = APIRouter()
 

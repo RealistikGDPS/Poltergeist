@@ -25,10 +25,15 @@ moderation behind a flexible string-based permission system.
 ```bash
 for f in configuration/*.example; do cp "$f" "${f%.example}"; done
 cp .env.example .env
-# Set APP_PUBLIC_URL, APP_ADMIN_API_KEY and the MySQL passwords.
+# Set APP_PUBLIC_URL, APP_ADMIN_API_KEY, the MySQL passwords and GITHUB_TOKEN.
 make build
 make run
 ```
+
+`GITHUB_TOKEN` must be able to read the private
+[poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core)
+repository; the image build passes it to `uv sync` as a build secret and it
+is not stored in the image.
 
 Point the client at `http://<host>/database`. The bundled nginx also routes
 `/panel` to the separate control room, when that is running on the same
@@ -50,3 +55,13 @@ make lint   # ruff and strict mypy
 The code follows the layered layout `api → services → resources → adapters`:
 transport, business rules, queries and external systems, each importing only
 the layer to its right. Expected failures are return values, never exceptions.
+
+Only the transport layer (`app/api`) and the entry point live here. The
+services, resources, adapters and utilities are the
+[poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core)
+library, shared with the control room and consumed from Git. Change shared
+logic there, then pull the new revision in:
+
+```bash
+uv lock --upgrade-package poltergeist-core
+```

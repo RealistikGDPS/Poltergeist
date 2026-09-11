@@ -1,10 +1,11 @@
 import asyncio
 import sys
 
+from poltergeist_core.utilities import logging
+from poltergeist_core.utilities import loop
+
 from app import api
 from app import settings
-from app.utilities import logging
-from app.utilities import loop
 
 logging.configure_from_yaml()
 loop.install_optimal_loop()
@@ -14,12 +15,13 @@ logger = logging.get_logger(__name__)
 
 async def _rebuild_leaderboards() -> None:
     # Local imports keep the ASGI component free of the one-shot tooling.
-    from app.adapters import boomlings
-    from app.adapters import mysql
-    from app.adapters import redis
-    from app.adapters import storage
+    from poltergeist_core.adapters import boomlings
+    from poltergeist_core.adapters import mysql
+    from poltergeist_core.adapters import redis
+    from poltergeist_core.adapters import storage
+    from poltergeist_core.services import leaderboards
+
     from app.api.context import HTTPTransactionContext
-    from app.services import leaderboards
 
     pool = mysql.default()
     cache = redis.default()

@@ -13,10 +13,10 @@ from enum import IntFlag
 from pathlib import Path
 from typing import Any
 
-from app.adapters.mysql import ImplementsMySQL
-from app.adapters.mysql import MySQLPool
-from app.utilities import clock
-from app.utilities import logging
+from poltergeist_core.adapters.mysql import ImplementsMySQL
+from poltergeist_core.adapters.mysql import MySQLPool
+from poltergeist_core.utilities import clock
+from poltergeist_core.utilities import logging
 
 type Row = Mapping[str, Any]
 

@@ -1,5 +1,2 @@
-from . import adapters
-from . import resources
-from . import services
+from . import api
 from . import settings
-from . import utilities

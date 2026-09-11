@@ -2,13 +2,12 @@ from collections.abc import AsyncGenerator
 from typing import override
 
 from fastapi import Request
-
-from app.adapters.boomlings import BoomlingsClient
-from app.adapters.mysql import ImplementsMySQL
-from app.adapters.mysql import MySQLPool
-from app.adapters.redis import RedisClient
-from app.adapters.storage import ImplementsStorage
-from app.services import AbstractContext
+from poltergeist_core.adapters.boomlings import BoomlingsClient
+from poltergeist_core.adapters.mysql import ImplementsMySQL
+from poltergeist_core.adapters.mysql import MySQLPool
+from poltergeist_core.adapters.redis import RedisClient
+from poltergeist_core.adapters.storage import ImplementsStorage
+from poltergeist_core.services import AbstractContext
 
 
 class HTTPContext(AbstractContext):

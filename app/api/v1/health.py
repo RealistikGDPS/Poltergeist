@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 from fastapi import Response
+from poltergeist_core.services import health
 
 from app.api.v1 import response
 from app.api.v1.context import RequiresContext
-from app.services import health
 
 router = APIRouter(prefix="/health")
 

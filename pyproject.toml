@@ -8,19 +8,13 @@ license-files = ["LICENSE"]
 authors = [{ name = "RealistikDash" }]
 requires-python = ">=3.14"
 dependencies = [
-    "asyncmy>=0.2.14",
-    "bcrypt>=5.0.0",
-    "cryptography>=50.0.1",
     "fastapi>=0.141.1",
     "gdformat>=0.2.1",
-    "httpx>=0.28.1",
+    "poltergeist-core",
     "pydantic>=2.13.5",
     "python-json-logger>=4.2.0",
     "python-multipart>=0.0.32",
-    "pyyaml>=6.0.3",
-    "redis>=8.1.0",
     "uvicorn>=0.52.4",
-    "uvloop>=0.22.1",
 ]
 
 [dependency-groups]
@@ -28,7 +22,6 @@ dev = [
     "mypy>=1.19",
     "pre-commit>=4",
     "ruff>=0.14",
-    "types-pyyaml>=6.0.12",
 ]
 
 [tool.ruff]
@@ -73,6 +66,5 @@ warn_unreachable = true
 implicit_reexport = true
 plugins = ["pydantic.mypy"]
 
-[[tool.mypy.overrides]]
-module = ["asyncmy", "asyncmy.*", "uvloop"]
-ignore_missing_imports = true
+[tool.uv.sources]
+poltergeist-core = { git = "https://github.com/RealistikGDPS/poltergeist-core" }
