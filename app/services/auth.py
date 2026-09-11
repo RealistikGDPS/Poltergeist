@@ -138,7 +138,7 @@ async def _verify(ctx: AbstractContext, user: User, gjp2: str) -> bool:
 
     credential = await ctx.credentials.find_by_user_id(user.id)
 
-    if credential is None:
+    if credential is None or credential.gjp2_bcrypt is None:
         return False
 
     if not await asyncio.to_thread(_check_gjp2, gjp2, credential.gjp2_bcrypt):
