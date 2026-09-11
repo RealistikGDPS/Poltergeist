@@ -447,3 +447,39 @@ async def remove_role(
     await ctx.mod_actions.create(actor_user_id, "remove", ModTarget.ROLE, role_id)
 
     return None
+
+
+async def remove_map_pack(
+    ctx: AbstractContext, *, actor_user_id: int, pack_id: int
+) -> AdministrationError.OnSuccess[None]:
+    refused = await _require(ctx, actor_user_id, Permission.PACKS_MANAGE)
+
+    if refused is not None:
+        return refused
+
+    if await ctx.map_packs.find_by_id(pack_id) is None:
+        return AdministrationError.NOT_FOUND
+
+    await ctx.map_packs.soft_delete(pack_id)
+    await ctx.mod_actions.create(actor_user_id, "remove", ModTarget.MAP_PACK, pack_id)
+
+    return None
+
+
+async def remove_gauntlet(
+    ctx: AbstractContext, *, actor_user_id: int, gauntlet_id: int
+) -> AdministrationError.OnSuccess[None]:
+    refused = await _require(ctx, actor_user_id, Permission.PACKS_MANAGE)
+
+    if refused is not None:
+        return refused
+
+    if await ctx.gauntlets.find_by_id(gauntlet_id) is None:
+        return AdministrationError.NOT_FOUND
+
+    await ctx.gauntlets.soft_delete(gauntlet_id)
+    await ctx.mod_actions.create(
+        actor_user_id, "remove", ModTarget.GAUNTLET, gauntlet_id
+    )
+
+    return None
