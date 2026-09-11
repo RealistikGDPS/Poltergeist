@@ -138,6 +138,33 @@ class CommentRepository:
 
         return count
 
+    async def list_recent(
+        self, *, query: str, user_id: int | None, page: int, size: int
+    ) -> list[Comment]:
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM comments WHERE deleted_at IS NULL "
+            "AND content LIKE %(pattern)s "
+            "AND (%(user)s IS NULL OR user_id = %(user)s) "
+            "ORDER BY id DESC LIMIT %(limit)s OFFSET %(offset)s",
+            {
+                "pattern": f"%{query}%",
+                "user": user_id,
+                "limit": size,
+                "offset": offset(page, size),
+            },
+        )
+
+        return [Comment.model_validate(row) for row in rows]
+
+    async def count_recent(self, *, query: str, user_id: int | None) -> int:
+        count: int = await self._mysql.fetch_val(
+            "SELECT COUNT(*) FROM comments WHERE deleted_at IS NULL "
+            "AND content LIKE %(pattern)s AND (%(user)s IS NULL OR user_id = %(user)s)",
+            {"pattern": f"%{query}%", "user": user_id},
+        )
+
+        return count
+
     async def add_likes(self, comment_id: int, delta: int) -> None:
         await self._mysql.execute(
             "UPDATE comments SET likes = likes + %(delta)s WHERE id = %(id)s",

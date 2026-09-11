@@ -5,6 +5,7 @@ from gdformat.enums import RewardItem
 
 from app.adapters.mysql import ImplementsMySQL
 from app.resources._common import Model
+from app.utilities import clock
 
 _COLUMNS = "id, reward_key, chest_type, max_claims, expires_at"
 
@@ -91,6 +92,20 @@ class SecretRewardRepository:
         )
 
         return result.last_row_id
+
+    async def list_all(self) -> list[SecretReward]:
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM secret_rewards WHERE deleted_at IS NULL ORDER BY "
+            f"id DESC"
+        )
+
+        return [SecretReward.model_validate(row) for row in rows]
+
+    async def soft_delete(self, reward_id: int) -> None:
+        await self._mysql.execute(
+            "UPDATE secret_rewards SET deleted_at = %(now)s WHERE id = %(id)s",
+            {"id": reward_id, "now": clock.now()},
+        )
 
     async def add_item(self, reward_id: int, item: RewardItem, amount: int) -> None:
         await self._mysql.execute(

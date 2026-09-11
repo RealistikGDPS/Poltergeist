@@ -59,6 +59,7 @@ class Permission(StrEnum):
     MOD_BADGE_ELDER = "mod.badge.elder"
     MOD_BADGE_LEADERBOARD = "mod.badge.leaderboard"
     COMMANDS_USE = "commands.use"
+    PANEL_ACCESS = "panel.access"
 
 
 class PermissionRepository:

@@ -5,6 +5,7 @@ from gdformat.enums import SendFeature
 
 from app.adapters.mysql import ImplementsMySQL
 from app.resources._common import Model
+from app.resources._common import offset
 from app.utilities import clock
 
 _COLUMNS = "id, level_id, user_id, stars, feature, demon_difficulty, created_at"
@@ -58,6 +59,22 @@ class SuggestionRepository:
         )
 
         return None if row is None else LevelSuggestion.model_validate(row)
+
+    async def list_pending(self, page: int, size: int) -> list[LevelSuggestion]:
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM level_suggestions WHERE deleted_at IS NULL "
+            "ORDER BY created_at DESC LIMIT %(limit)s OFFSET %(offset)s",
+            {"limit": size, "offset": offset(page, size)},
+        )
+
+        return [LevelSuggestion.model_validate(row) for row in rows]
+
+    async def count_pending(self) -> int:
+        count: int = await self._mysql.fetch_val(
+            "SELECT COUNT(*) FROM level_suggestions WHERE deleted_at IS NULL"
+        )
+
+        return count
 
     async def resolve_for_level(self, level_id: int) -> None:
         await self._mysql.execute(

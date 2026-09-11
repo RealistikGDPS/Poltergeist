@@ -9,6 +9,7 @@ from app.adapters.mysql import ImplementsMySQL
 from app.adapters.redis import RedisClient
 from app.adapters.storage import ImplementsStorage
 from app.resources import AccountCommentRepository
+from app.resources import AnalyticsRepository
 from app.resources import ArtistRepository
 from app.resources import BanRepository
 from app.resources import BlockRepository
@@ -104,6 +105,10 @@ class AbstractContext(ABC):
     @property
     def users(self) -> UserRepository:
         return UserRepository(self._mysql)
+
+    @property
+    def analytics(self) -> AnalyticsRepository:
+        return AnalyticsRepository(self._mysql)
 
     @property
     def credentials(self) -> CredentialRepository:

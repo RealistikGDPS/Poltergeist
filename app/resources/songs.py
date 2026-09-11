@@ -152,6 +152,32 @@ class SongRepository:
 
         return [Song.model_validate(row) for row in rows]
 
+    async def list_page(self, *, query: str, page: int, size: int) -> list[Song]:
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_SONG_COLUMNS} {_SONG_FROM} WHERE s.deleted_at IS NULL "
+            "AND (s.name LIKE %(pattern)s OR a.name LIKE %(pattern)s OR s.id = "
+            "%(exact)s) "
+            "ORDER BY s.id DESC LIMIT %(limit)s OFFSET %(offset)s",
+            {
+                "pattern": f"%{query}%",
+                "exact": int(query) if query.isdecimal() else 0,
+                "limit": size,
+                "offset": offset(page, size),
+            },
+        )
+
+        return [Song.model_validate(row) for row in rows]
+
+    async def count_page(self, *, query: str) -> int:
+        count: int = await self._mysql.fetch_val(
+            f"SELECT COUNT(*) {_SONG_FROM} WHERE s.deleted_at IS NULL "
+            "AND (s.name LIKE %(pattern)s OR a.name LIKE %(pattern)s OR s.id = "
+            "%(exact)s)",
+            {"pattern": f"%{query}%", "exact": int(query) if query.isdecimal() else 0},
+        )
+
+        return count
+
     async def upsert_upstream(
         self,
         song_id: int,

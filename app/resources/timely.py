@@ -6,6 +6,7 @@ from gdformat.enums import TimelyType
 
 from app.adapters.mysql import ImplementsMySQL
 from app.resources._common import Model
+from app.resources._common import offset
 from app.utilities import clock
 
 _COLUMNS = (
@@ -86,6 +87,20 @@ class TimelyRepository:
         )
 
         return None if row is None else TimelyLevel.model_validate(row)
+
+    async def list_from(
+        self, timely_type: TimelyType, page: int, size: int
+    ) -> list[TimelyLevel]:
+        """Newest first, so the queue and the history read as one list."""
+
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM timely_levels WHERE type = %(type)s "
+            "AND deleted_at IS NULL ORDER BY sequence DESC "
+            "LIMIT %(limit)s OFFSET %(offset)s",
+            {"type": int(timely_type), "limit": size, "offset": offset(page, size)},
+        )
+
+        return [TimelyLevel.model_validate(row) for row in rows]
 
     async def create(
         self,

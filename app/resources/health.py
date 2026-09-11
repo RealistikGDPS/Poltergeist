@@ -25,6 +25,15 @@ class HealthRepository:
 
         return True
 
+    async def redis_facts(self) -> dict[str, str]:
+        info = await self._redis.info("memory")
+        keys = await self._redis.dbsize()
+
+        return {
+            "used_memory_human": str(info.get("used_memory_human", "?")),
+            "keys": str(keys),
+        }
+
     async def redis_available(self) -> bool:
         try:
             await self._redis.ping()

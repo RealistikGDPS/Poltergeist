@@ -1,7 +1,18 @@
+from datetime import datetime
+
 from gdformat.enums import Platform
 
 from app.adapters.mysql import ImplementsMySQL
+from app.resources._common import Model
 from app.utilities import clock
+
+
+class Device(Model):
+    user_id: int
+    udid: str
+    platform: Platform
+    first_seen_at: datetime
+    last_seen_at: datetime
 
 
 class DeviceRepository:
@@ -22,6 +33,15 @@ class DeviceRepository:
                 "now": clock.now(),
             },
         )
+
+    async def list_by_user(self, user_id: int) -> list[Device]:
+        rows = await self._mysql.fetch_all(
+            "SELECT user_id, udid, platform, first_seen_at, last_seen_at "
+            "FROM user_devices WHERE user_id = %(id)s ORDER BY last_seen_at DESC",
+            {"id": user_id},
+        )
+
+        return [Device.model_validate(row) for row in rows]
 
     async def list_user_ids_by_udid(self, udid: str) -> list[int]:
         rows = await self._mysql.fetch_all(

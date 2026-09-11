@@ -30,7 +30,9 @@ make build
 make run
 ```
 
-Point the client at `http://<host>/database`. The JSON API lives under
+Point the client at `http://<host>/database`. The bundled nginx also routes
+`/panel` to the separate control room, when that is running on the same
+Docker network. The JSON API lives under
 `/api/v1`; create the first administrator with it:
 
 ```bash

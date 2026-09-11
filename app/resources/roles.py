@@ -75,6 +75,46 @@ class RoleRepository:
 
         return result.last_row_id
 
+    async def update(
+        self, role_id: int, *, name: str, description: str, priority: int
+    ) -> None:
+        await self._mysql.execute(
+            "UPDATE roles SET name = %(name)s, description = %(description)s, "
+            "priority = %(priority)s WHERE id = %(id)s",
+            {
+                "id": role_id,
+                "name": name,
+                "description": description,
+                "priority": priority,
+            },
+        )
+
+    async def soft_delete(self, role_id: int) -> None:
+        await self._mysql.execute(
+            "UPDATE roles SET deleted_at = %(now)s WHERE id = %(id)s",
+            {"id": role_id, "now": clock.now()},
+        )
+
+    async def count_members(self, role_id: int) -> int:
+        count: int = await self._mysql.fetch_val(
+            "SELECT COUNT(*) FROM user_roles WHERE role_id = %(id)s AND deleted_at IS "
+            "NULL "
+            "AND (expires_at IS NULL OR expires_at > %(now)s)",
+            {"id": role_id, "now": clock.now()},
+        )
+
+        return count
+
+    async def list_member_ids(self, role_id: int) -> list[int]:
+        rows = await self._mysql.fetch_all(
+            "SELECT user_id FROM user_roles WHERE role_id = %(id)s AND deleted_at IS "
+            "NULL "
+            "AND (expires_at IS NULL OR expires_at > %(now)s) ORDER BY created_at DESC",
+            {"id": role_id, "now": clock.now()},
+        )
+
+        return [int(row["user_id"]) for row in rows]
+
     async def replace_permissions(self, role_id: int, permissions: list[str]) -> None:
         await self._mysql.execute(
             "DELETE FROM role_permissions WHERE role_id = %(id)s",

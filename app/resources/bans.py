@@ -3,6 +3,7 @@ from enum import StrEnum
 
 from app.adapters.mysql import ImplementsMySQL
 from app.resources._common import Model
+from app.resources._common import offset
 from app.utilities import clock
 
 _COLUMNS = (
@@ -63,6 +64,22 @@ class BanRepository:
         )
 
         return [UserBan.model_validate(row) for row in rows]
+
+    async def list_all_active(self, page: int, size: int) -> list[UserBan]:
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM user_bans WHERE {_ACTIVE} "
+            "ORDER BY created_at DESC LIMIT %(limit)s OFFSET %(offset)s",
+            {"now": clock.now(), "limit": size, "offset": offset(page, size)},
+        )
+
+        return [UserBan.model_validate(row) for row in rows]
+
+    async def count_all_active(self) -> int:
+        count: int = await self._mysql.fetch_val(
+            f"SELECT COUNT(*) FROM user_bans WHERE {_ACTIVE}", {"now": clock.now()}
+        )
+
+        return count
 
     async def create(
         self,

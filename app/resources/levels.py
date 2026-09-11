@@ -581,6 +581,14 @@ class LevelRepository:
 
         return int(points)
 
+    async def count_by_user(self, user_id: int) -> int:
+        count: int = await self._mysql.fetch_val(
+            "SELECT COUNT(*) FROM levels WHERE user_id = %(id)s AND deleted_at IS NULL",
+            {"id": user_id},
+        )
+
+        return count
+
     async def list_rated(self) -> list[RatedLevel]:
         rows = await self._mysql.fetch_all(
             "SELECT id, stars FROM levels WHERE stars > 0 AND deleted_at IS NULL "

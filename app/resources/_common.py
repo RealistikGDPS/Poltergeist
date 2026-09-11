@@ -22,6 +22,7 @@ def _parse_json(value: Any) -> Any:
 
 
 type JsonIntList = Annotated[list[int], BeforeValidator(_parse_json)]
+type JsonObject = Annotated[dict[str, Any] | None, BeforeValidator(_parse_json)]
 
 
 def placeholders(values: Sequence[int], prefix: str) -> tuple[str, MySQLValues]:

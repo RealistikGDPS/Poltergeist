@@ -155,6 +155,46 @@ class UserRepository:
 
         return [User.model_validate(row) for row in rows]
 
+    async def list_page(
+        self, *, query: str, order: str, page: int, size: int
+    ) -> list[User]:
+        """`order` is one of `newest`, `oldest`, `recently_seen`, `name`."""
+
+        ordering = {
+            "newest": "id DESC",
+            "oldest": "id ASC",
+            "recently_seen": "last_seen_at DESC, id DESC",
+            "name": "username ASC",
+        }[order]
+
+        rows = await self._mysql.fetch_all(
+            f"SELECT {_COLUMNS} FROM users WHERE deleted_at IS NULL "
+            "AND (username LIKE %(pattern)s OR email LIKE %(pattern)s "
+            "OR id = %(exact)s) "
+            f"ORDER BY {ordering} LIMIT %(limit)s OFFSET %(offset)s",
+            {
+                "pattern": f"%{query}%",
+                "exact": int(query) if query.isdecimal() else 0,
+                "limit": size,
+                "offset": offset(page, size),
+            },
+        )
+
+        return [User.model_validate(row) for row in rows]
+
+    async def count_page(self, *, query: str) -> int:
+        count: int = await self._mysql.fetch_val(
+            "SELECT COUNT(*) FROM users WHERE deleted_at IS NULL "
+            "AND (username LIKE %(pattern)s OR email LIKE %(pattern)s "
+            "OR id = %(exact)s)",
+            {
+                "pattern": f"%{query}%",
+                "exact": int(query) if query.isdecimal() else 0,
+            },
+        )
+
+        return count
+
     async def count_search(self, prefix: str) -> int:
         count: int = await self._mysql.fetch_val(
             "SELECT COUNT(*) FROM users WHERE username LIKE %(pattern)s "

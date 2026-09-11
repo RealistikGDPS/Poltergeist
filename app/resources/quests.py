@@ -4,6 +4,7 @@ from gdformat.enums import QuestItem
 
 from app.adapters.mysql import ImplementsMySQL
 from app.resources._common import Model
+from app.utilities import clock
 
 
 class Quest(Model):
@@ -45,6 +46,12 @@ class QuestRepository:
         )
 
         return None if row is None else Quest.model_validate(row)
+
+    async def soft_delete(self, quest_id: int) -> None:
+        await self._mysql.execute(
+            "UPDATE quests SET deleted_at = %(now)s WHERE id = %(id)s",
+            {"id": quest_id, "now": clock.now()},
+        )
 
     async def create(
         self, *, item: QuestItem, amount: int, diamonds: int, name: str
