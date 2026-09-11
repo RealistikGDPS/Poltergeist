@@ -16,6 +16,7 @@ from app.api.v1 import response
 from app.api.v1.context import RequiresAdmin
 from app.api.v1.context import RequiresTransaction
 from app.resources import BanType
+from app.services import auth
 from app.services import leaderboards
 from app.services import moderation
 from app.services import packs
@@ -24,6 +25,10 @@ from app.services import songs
 from app.services import timely
 
 router = APIRouter(dependencies=[])
+
+
+class SetPasswordRequest(BaseModel):
+    password: str = Field(min_length=6, max_length=64)
 
 
 class AssignRoleRequest(BaseModel):
@@ -80,6 +85,18 @@ class CreateSecretRewardRequest(BaseModel):
     items: list[RewardItemRequest]
     max_claims: int | None = Field(default=None, ge=1)
     expires_at: datetime | None = None
+
+
+@router.put("/users/{user_id}/password")
+async def set_password(
+    user_id: int, body: SetPasswordRequest, ctx: RequiresTransaction, _: RequiresAdmin
+) -> Response:
+    """Also the way accounts imported from the 2.1 server regain access: their
+    stored hash cannot be checked against what a 2.2 client sends."""
+
+    response.unwrap(await auth.set_password(ctx, user_id, body.password))
+
+    return response.create({"user_id": user_id})
 
 
 @router.post("/users/{user_id}/roles")

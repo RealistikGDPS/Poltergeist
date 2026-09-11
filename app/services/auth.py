@@ -53,6 +53,7 @@ class AuthError(ServiceError, StrEnum):
     PASSWORD_INVALID = "password_invalid"
     EMAIL_INVALID = "email_invalid"
     EMAIL_TAKEN = "email_taken"
+    USER_NOT_FOUND = "user_not_found"
 
     def service(self) -> str:
         return "auth"
@@ -70,6 +71,8 @@ class AuthError(ServiceError, StrEnum):
                 return status.HTTP_429_TOO_MANY_REQUESTS
             case AuthError.NAME_TAKEN | AuthError.EMAIL_TAKEN:
                 return status.HTTP_409_CONFLICT
+            case AuthError.USER_NOT_FOUND:
+                return status.HTTP_404_NOT_FOUND
             case _:
                 return status.HTTP_400_BAD_REQUEST
 
@@ -95,6 +98,8 @@ class AuthError(ServiceError, StrEnum):
                 return codes.RegisterError.EMAIL_INVALID
             case AuthError.EMAIL_TAKEN:
                 return codes.RegisterError.EMAIL_TAKEN
+            case AuthError.USER_NOT_FOUND:
+                return GD_FAILURE
 
 
 @dataclass(frozen=True, slots=True)
@@ -254,7 +259,18 @@ async def register(
     return user_id
 
 
-async def change_password(ctx: AbstractContext, user_id: int, password: str) -> None:
+async def set_password(
+    ctx: AbstractContext, user_id: int, password: str
+) -> AuthError.OnSuccess[None]:
+    if not _PASSWORD_MIN <= len(password) <= _PASSWORD_MAX:
+        return AuthError.PASSWORD_INVALID
+
+    if await ctx.users.find_by_id(user_id) is None:
+        return AuthError.USER_NOT_FOUND
+
     hashed = await asyncio.to_thread(_hash_gjp2, crypto.gjp2(password))
     await ctx.credentials.upsert(user_id, hashed)
     await ctx.sessions.revoke(user_id)
+    logger.info("Password set.", extra={"user_id": user_id})
+
+    return None
