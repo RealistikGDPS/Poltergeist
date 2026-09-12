@@ -10,6 +10,7 @@ from gdformat.enums import RewardItem
 from gdformat.enums import SendFeature
 from gdformat.enums import TimelyType
 from poltergeist_core.resources import BanType
+from poltergeist_core.resources import UserKind
 from poltergeist_core.services import auth
 from poltergeist_core.services import leaderboards
 from poltergeist_core.services import moderation
@@ -29,6 +30,10 @@ router = APIRouter(dependencies=[])
 
 class SetPasswordRequest(BaseModel):
     password: str = Field(min_length=6, max_length=64)
+
+
+class SetKindRequest(BaseModel):
+    kind: UserKind
 
 
 class AssignRoleRequest(BaseModel):
@@ -97,6 +102,19 @@ async def set_password(
     response.unwrap(await auth.set_password(ctx, user_id, body.password))
 
     return response.create({"user_id": user_id})
+
+
+@router.put("/users/{user_id}/kind")
+async def set_user_kind(
+    user_id: int, body: SetKindRequest, ctx: RequiresTransaction, _: RequiresAdmin
+) -> Response:
+    response.unwrap(
+        await moderation.set_user_kind(
+            ctx, actor_user_id=None, target_user_id=user_id, kind=body.kind
+        )
+    )
+
+    return response.create({"user_id": user_id, "kind": body.kind})
 
 
 @router.post("/users/{user_id}/roles")
