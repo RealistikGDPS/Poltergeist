@@ -41,6 +41,14 @@ granted by hand; every later role goes through the website's admin area:
 INSERT INTO user_roles (user_id, role_id) VALUES (<id>, 5);
 ```
 
+## Events
+
+Major actions (registrations, level uploads and ratings, bans, roles,
+settings changes) are announced on Redis Pub/Sub channels named
+`poltergeist:*`, each message carrying `"component": "poltergeist"`. The
+envelope and the event catalogue are documented in
+[poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core#events).
+
 ## Development
 
 ```bash

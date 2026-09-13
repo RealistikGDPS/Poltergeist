@@ -22,13 +22,16 @@ async def _rebuild_leaderboards() -> None:
     from poltergeist_core.services import leaderboards
 
     from app.api.context import HTTPTransactionContext
+    from app.api.context import event_publisher
 
     pool = mysql.default()
     cache = redis.default()
     await pool.connect()
     await cache.initialise()
 
-    ctx = HTTPTransactionContext(pool, cache, storage.default(), boomlings.default())
+    ctx = HTTPTransactionContext(
+        pool, cache, storage.default(), boomlings.default(), event_publisher(cache)
+    )
     total = await leaderboards.rebuild(ctx)
     logger.info("Leaderboard rebuild finished.", extra={"users": total})
 
