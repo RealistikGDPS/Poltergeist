@@ -14,8 +14,8 @@ from poltergeist_core.adapters import storage
 from poltergeist_core.utilities import logging
 
 from . import gd
+from . import health
 from . import root
-from . import v1
 from .interruption import ServiceInterruptionException
 from .paths import CollapseSlashesMiddleware
 
@@ -107,6 +107,6 @@ def initialise_path_rewrite(app: FastAPI) -> None:
 
 def create_routes(app: FastAPI) -> None:
     app.include_router(root.router)
+    app.include_router(health.router)
     app.include_router(gd.create_router())
-    app.include_router(v1.create_router())
     logger.debug("Attached routers to the app instance.")

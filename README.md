@@ -9,16 +9,16 @@ quests and vault rewards. Only the current client protocol is supported and
 every request must be logged in.
 
 Moderation runs in game through `!` commands in level comments (rating,
-featuring, dailies, bans, roles) and through a small JSON API under
-`/api/v1`. What an account may do is decided by dotted permission strings
-such as `levels.rate` or `users.ban.*`, granted through roles and per-user
-overrides.
+featuring, dailies, bans, roles) and through the admin area of
+[rgdps-web](https://github.com/RealistikGDPS/rgdps-web). What an account may
+do is decided by dotted permission strings such as `levels.rate` or
+`users.ban.*`, granted through roles and per-user overrides.
 
 ## Layout
 
 ```
 app/api/gd      Game endpoints
-app/api/v1      JSON administration API and health check
+app/api/health  Internal health check for the container and the website
 app/main.py     Entry point, selected by APP_COMPONENT
 scripts/        Container start scripts
 configuration/  Example environment files
@@ -34,12 +34,11 @@ variables the server reads and `configuration/mysql.env.example` the database
 credentials. `APP_COMPONENT=fastapi` serves the game;
 `APP_COMPONENT=rebuild_leaderboards` recomputes the Redis rankings and exits.
 
-Point the client at `http://<host>/database`. To create the first
-administrator:
+Point the client at `http://<host>/database`. The first administrator is
+granted by hand; every later role goes through the website's admin area:
 
-```bash
-curl -X POST -H "X-API-Key: $APP_ADMIN_API_KEY" -H "Content-Type: application/json" \
-  -d '{"role":"admin"}' http://<host>/api/v1/users/<id>/roles
+```sql
+INSERT INTO user_roles (user_id, role_id) VALUES (<id>, 5);
 ```
 
 ## Development
