@@ -10,6 +10,7 @@ from poltergeist_core.services.auth import Session
 
 from app.api.context import HTTPContext
 from app.api.context import HTTPTransactionContext
+from app.api.context import client_ip
 from app.api.context import transaction_context
 from app.api.gd import response
 
@@ -39,7 +40,9 @@ async def _authenticate(
         response.unwrap(auth.AuthError.UNAUTHENTICATED)
 
     return response.unwrap(
-        await auth.authenticate(HTTPContext(request), parsed.auth, parsed.client)
+        await auth.authenticate(
+            HTTPContext(request), parsed.auth, parsed.client, ip=client_ip(request)
+        )
     )
 
 

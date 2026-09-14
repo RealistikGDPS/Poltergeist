@@ -604,7 +604,7 @@ dev = [
 [[package]]
 name = "poltergeist-core"
 version = "0.1.0"
-source = { git = "https://github.com/RealistikGDPS/poltergeist-core#d61de6cfb5003fcf2991fe20c25d852ac1dbb520" }
+source = { git = "https://github.com/RealistikGDPS/poltergeist-core#9dd911c0d8951dde02f52d614ec40ff174cb82a4" }
 dependencies = [
     { name = "asyncmy" },
     { name = "bcrypt" },

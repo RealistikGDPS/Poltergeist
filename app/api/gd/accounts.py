@@ -18,11 +18,13 @@ router = APIRouter()
 
 
 @router.post("/accounts/loginGJAccount.php")
-async def login(form: RequiresForm, ctx: RequiresTransaction) -> Response:
+async def login(
+    form: RequiresForm, ctx: RequiresTransaction, http_request: Request
+) -> Response:
     request = response.parse(
         requests.parse_login(form), secret=Secret.ACCOUNT, form=form
     )
-    result = response.unwrap(await auth.login(ctx, request))
+    result = response.unwrap(await auth.login(ctx, request, ip=client_ip(http_request)))
 
     return response.text(responses.serialise_login(result.account_id, result.user_id))
 
