@@ -57,9 +57,7 @@ that GMDprivateServer also authenticates are compared.
 
 ![Requests per second on authenticated endpoints, Poltergeist against GMDprivateServer](docs/benchmark.svg)
 
-GMDprivateServer runs bcrypt on every request, which caps it at about 60
-requests per second. Poltergeist verifies a password once and caches the
-session in Redis.
+Poltergeist verifies a password once and caches the session in Redis.
 
 ## Development
 
