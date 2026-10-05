@@ -60,26 +60,15 @@ averaged over two passes. Poltergeist ran with the `poltergeist-core` commit
 pinned in `uv.lock`, and its per-user rate limits for comments, likes and
 uploads were lifted for the write runs.
 
-Requests per second at 64 connections (reads) and 32 connections (writes):
+Only endpoints where GMDprivateServer also checks the player's credentials are
+compared, since Poltergeist checks them on every request. Reads ran at 64
+connections and writes at 32.
 
-| Endpoint                | Poltergeist | GMDprivateServer |
-| ----------------------- | ----------: | ---------------: |
-| `getGJLevels`           |         390 |              262 |
-| `getGJScores`           |         328 |               62 |
-| `getGJUserInfo`         |         559 |               63 |
-| `loginGJAccount`        |         188 |               59 |
-| `downloadGJLevel`       |         630 |             1600 |
-| `getGJComments`         |         488 |             1060 |
-| `uploadGJComment`       |         523 |               59 |
-| `uploadGJLevel`         |         300 |               59 |
-| `likeGJItem`            |         505 |              892 |
+![Requests per second on authenticated endpoints, Poltergeist against GMDprivateServer](docs/benchmark.svg)
 
-The gap follows how each server authenticates. GMDprivateServer runs bcrypt on
-the `gjp2` of every request that checks it, which caps those endpoints at about
-60 requests per second. It does not check it on level downloads, comment reads
-or likes, where it does less work per request and wins. Poltergeist verifies a
-password once and caches the session in Redis for an hour, but requires a valid
-login on every request.
+GMDprivateServer runs bcrypt on the `gjp2` of every request, which caps these
+endpoints at about 60 requests per second. Poltergeist verifies a password once
+and caches the session in Redis for an hour.
 
 Concurrent logins for the same account can deadlock in MySQL and return a 500.
 `note_login` takes shared locks on the user row through its foreign keys and
