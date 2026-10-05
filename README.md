@@ -49,6 +49,42 @@ settings changes) are announced on Redis Pub/Sub channels named
 envelope and the event catalogue are documented in
 [poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core#events).
 
+## Benchmarks
+
+Compared with [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer)
+on one 4 vCPU, 16 GB machine that also ran the load generator, so read the
+numbers as relative. Both servers sat behind nginx on MySQL 8.0 with 4 workers
+(4 uvicorn, 4 php-fpm), holding 100 users, 1000 levels and 500 comments. Load
+came from `wrk` at 4 and 64 connections for reads and 4 and 32 for writes,
+averaged over two passes. Poltergeist ran with the `poltergeist-core` commit
+pinned in `uv.lock`, and its per-user rate limits for comments, likes and
+uploads were lifted for the write runs.
+
+Requests per second at 64 connections (reads) and 32 connections (writes):
+
+| Endpoint                | Poltergeist | GMDprivateServer |
+| ----------------------- | ----------: | ---------------: |
+| `getGJLevels`           |         390 |              262 |
+| `getGJScores`           |         328 |               62 |
+| `getGJUserInfo`         |         559 |               63 |
+| `loginGJAccount`        |         188 |               59 |
+| `downloadGJLevel`       |         630 |             1600 |
+| `getGJComments`         |         488 |             1060 |
+| `uploadGJComment`       |         523 |               59 |
+| `uploadGJLevel`         |         300 |               59 |
+| `likeGJItem`            |         505 |              892 |
+
+The gap follows how each server authenticates. GMDprivateServer runs bcrypt on
+the `gjp2` of every request that checks it, which caps those endpoints at about
+60 requests per second. It does not check it on level downloads, comment reads
+or likes, where it does less work per request and wins. Poltergeist verifies a
+password once and caches the session in Redis for an hour, but requires a valid
+login on every request.
+
+Concurrent logins for the same account can deadlock in MySQL and return a 500.
+`note_login` takes shared locks on the user row through its foreign keys and
+`touch_last_seen` then asks for an exclusive lock on the same row.
+
 ## Development
 
 ```bash
