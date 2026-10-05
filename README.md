@@ -52,12 +52,10 @@ envelope and the event catalogue are documented in
 ## Benchmarks
 
 Against [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer) on a
-4 vCPU machine, both behind nginx on MySQL 8.0 with 4 workers. Only endpoints
-that GMDprivateServer also authenticates are compared.
+4 vCPU machine, both behind nginx on MySQL 8.4 with 2 workers. Simulated "realistic" workload.
 
-![Requests per second on authenticated endpoints, Poltergeist against GMDprivateServer](docs/benchmark.svg)
+<img width="1760" height="880" alt="image" src="https://github.com/user-attachments/assets/8b2bcabe-9385-44c7-b190-df34ec31e41a" />
 
-Poltergeist verifies a password once and caches the session in Redis.
 
 ## Development
 
