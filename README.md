@@ -51,28 +51,15 @@ envelope and the event catalogue are documented in
 
 ## Benchmarks
 
-Compared with [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer)
-on one 4 vCPU, 16 GB machine that also ran the load generator, so read the
-numbers as relative. Both servers sat behind nginx on MySQL 8.0 with 4 workers
-(4 uvicorn, 4 php-fpm), holding 100 users, 1000 levels and 500 comments. Load
-came from `wrk` at 4 and 64 connections for reads and 4 and 32 for writes,
-averaged over two passes. Poltergeist ran with the `poltergeist-core` commit
-pinned in `uv.lock`, and its per-user rate limits for comments, likes and
-uploads were lifted for the write runs.
-
-Only endpoints where GMDprivateServer also checks the player's credentials are
-compared, since Poltergeist checks them on every request. Reads ran at 64
-connections and writes at 32.
+Against [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer) on a
+4 vCPU machine, both behind nginx on MySQL 8.0 with 4 workers. Only endpoints
+that GMDprivateServer also authenticates are compared.
 
 ![Requests per second on authenticated endpoints, Poltergeist against GMDprivateServer](docs/benchmark.svg)
 
-GMDprivateServer runs bcrypt on the `gjp2` of every request, which caps these
-endpoints at about 60 requests per second. Poltergeist verifies a password once
-and caches the session in Redis for an hour.
-
-Concurrent logins for the same account can deadlock in MySQL and return a 500.
-`note_login` takes shared locks on the user row through its foreign keys and
-`touch_last_seen` then asks for an exclusive lock on the same row.
+GMDprivateServer runs bcrypt on every request, which caps it at about 60
+requests per second. Poltergeist verifies a password once and caches the
+session in Redis.
 
 ## Development
 
