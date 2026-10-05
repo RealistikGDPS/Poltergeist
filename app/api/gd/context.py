@@ -5,6 +5,7 @@ from fastapi import Request
 from gdformat import is_error as is_parse_error
 from gdformat import requests
 from gdformat.enums import Secret
+from poltergeist_core import settings
 from poltergeist_core.services import auth
 from poltergeist_core.services.auth import Session
 
@@ -16,11 +17,13 @@ from app.api.gd import response
 
 type Form = dict[str, str]
 
+_MAX_FIELD_BYTES = max(settings.APP_LEVEL_MAX_BYTES, settings.APP_SAVE_MAX_BYTES)
+
 _SECRETS = frozenset(secret.value for secret in Secret)
 
 
 async def _read_form(request: Request) -> Form:
-    form = await request.form()
+    form = await request.form(max_part_size=_MAX_FIELD_BYTES)
 
     return {key: value for key, value in form.items() if isinstance(value, str)}
 
