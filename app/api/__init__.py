@@ -1,7 +1,4 @@
-import uuid
 from collections.abc import AsyncGenerator
-from collections.abc import Awaitable
-from collections.abc import Callable
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -18,6 +15,7 @@ from . import health
 from . import root
 from .interruption import ServiceInterruptionException
 from .paths import CollapseSlashesMiddleware
+from .tracing import RequestTraceMiddleware
 
 logger = logging.get_logger(__name__)
 
@@ -85,18 +83,7 @@ def initialise_interruptions(app: FastAPI) -> None:
 
 
 def initialise_request_tracing(app: FastAPI) -> None:
-    @app.middleware("http")
-    async def trace_request(
-        request: Request, call_next: Callable[[Request], Awaitable[Response]]
-    ) -> Response:
-        request.state.uuid = str(uuid.uuid4())
-        logging.add_context(uuid=request.state.uuid, path=request.url.path)
-
-        try:
-            return await call_next(request)
-        finally:
-            logging.clear_context()
-
+    app.add_middleware(RequestTraceMiddleware)
     logger.debug("Initialised request tracing.")
 
 
