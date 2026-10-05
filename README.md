@@ -49,6 +49,16 @@ settings changes) are announced on Redis Pub/Sub channels named
 envelope and the event catalogue are documented in
 [poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core#events).
 
+## Benchmarks
+
+Against [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer) on a
+4 vCPU machine, both behind nginx on MySQL 8.0 with 4 workers. Only endpoints
+that GMDprivateServer also authenticates are compared.
+
+![Requests per second on authenticated endpoints, Poltergeist against GMDprivateServer](docs/benchmark.svg)
+
+Poltergeist verifies a password once and caches the session in Redis.
+
 ## Development
 
 ```bash

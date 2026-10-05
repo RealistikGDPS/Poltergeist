@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="426" viewBox="0 0 760 426" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Requests per second on authenticated endpoints</title>
+<desc id="d">Poltergeist against GMDprivateServer: getGJUserInfo 559 against 63; uploadGJComment 523 against 59; getGJScores 328 against 62; uploadGJLevel 300 against 59; loginGJAccount 188 against 59.</desc>
+<rect width="760" height="426" rx="8" fill="#fcfcfb"/>
+<rect x="24" y="22" width="12" height="12" rx="2" fill="#2a78d6"/><text x="44" y="32" font-size="13" fill="#0b0b0b">Poltergeist</text>
+<rect x="136" y="22" width="12" height="12" rx="2" fill="#eb6834"/><text x="156" y="32" font-size="13" fill="#0b0b0b">GMDprivateServer</text>
+<line x1="170.0" y1="56" x2="170.0" y2="366" stroke="#e3e2de" stroke-width="1"/>
+<text x="170.0" y="382" font-size="11" text-anchor="middle" fill="#52514e">0</text>
+<line x1="346.7" y1="56" x2="346.7" y2="366" stroke="#e3e2de" stroke-width="1"/>
+<text x="346.7" y="382" font-size="11" text-anchor="middle" fill="#52514e">200</text>
+<line x1="523.3" y1="56" x2="523.3" y2="366" stroke="#e3e2de" stroke-width="1"/>
+<text x="523.3" y="382" font-size="11" text-anchor="middle" fill="#52514e">400</text>
+<line x1="700.0" y1="56" x2="700.0" y2="366" stroke="#e3e2de" stroke-width="1"/>
+<text x="700.0" y="382" font-size="11" text-anchor="middle" fill="#52514e">600</text>
+<text x="435.0" y="412" font-size="12" text-anchor="middle" fill="#52514e">requests per second, higher is better</text>
+<text x="158" y="83" font-size="13" text-anchor="end" fill="#0b0b0b">getGJUserInfo</text>
+<path d="M170.0 64 H659.8 a4 4 0 0 1 4 4 V78 a4 4 0 0 1 -4 4 H170.0 Z" fill="#2a78d6"/>
+<text x="671.8" y="77" font-size="12" fill="#0b0b0b">559</text>
+<path d="M170.0 84 H221.7 a4 4 0 0 1 4 4 V98 a4 4 0 0 1 -4 4 H170.0 Z" fill="#eb6834"/>
+<text x="233.7" y="97" font-size="12" fill="#0b0b0b">63</text>
+<text x="158" y="145" font-size="13" text-anchor="end" fill="#0b0b0b">uploadGJComment</text>
+<path d="M170.0 126 H628.0 a4 4 0 0 1 4 4 V140 a4 4 0 0 1 -4 4 H170.0 Z" fill="#2a78d6"/>
+<text x="640.0" y="139" font-size="12" fill="#0b0b0b">523</text>
+<path d="M170.0 146 H218.1 a4 4 0 0 1 4 4 V160 a4 4 0 0 1 -4 4 H170.0 Z" fill="#eb6834"/>
+<text x="230.1" y="159" font-size="12" fill="#0b0b0b">59</text>
+<text x="158" y="207" font-size="13" text-anchor="end" fill="#0b0b0b">getGJScores</text>
+<path d="M170.0 188 H455.7 a4 4 0 0 1 4 4 V202 a4 4 0 0 1 -4 4 H170.0 Z" fill="#2a78d6"/>
+<text x="467.7" y="201" font-size="12" fill="#0b0b0b">328</text>
+<path d="M170.0 208 H220.8 a4 4 0 0 1 4 4 V222 a4 4 0 0 1 -4 4 H170.0 Z" fill="#eb6834"/>
+<text x="232.8" y="221" font-size="12" fill="#0b0b0b">62</text>
+<text x="158" y="269" font-size="13" text-anchor="end" fill="#0b0b0b">uploadGJLevel</text>
+<path d="M170.0 250 H431.0 a4 4 0 0 1 4 4 V264 a4 4 0 0 1 -4 4 H170.0 Z" fill="#2a78d6"/>
+<text x="443.0" y="263" font-size="12" fill="#0b0b0b">300</text>
+<path d="M170.0 270 H218.1 a4 4 0 0 1 4 4 V284 a4 4 0 0 1 -4 4 H170.0 Z" fill="#eb6834"/>
+<text x="230.1" y="283" font-size="12" fill="#0b0b0b">59</text>
+<text x="158" y="331" font-size="13" text-anchor="end" fill="#0b0b0b">loginGJAccount</text>
+<path d="M170.0 312 H332.1 a4 4 0 0 1 4 4 V326 a4 4 0 0 1 -4 4 H170.0 Z" fill="#2a78d6"/>
+<text x="344.1" y="325" font-size="12" fill="#0b0b0b">188</text>
+<path d="M170.0 332 H218.1 a4 4 0 0 1 4 4 V346 a4 4 0 0 1 -4 4 H170.0 Z" fill="#eb6834"/>
+<text x="230.1" y="345" font-size="12" fill="#0b0b0b">59</text>
+</svg>
