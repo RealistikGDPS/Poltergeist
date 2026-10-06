@@ -14,6 +14,12 @@ featuring, dailies, bans, roles) and through the admin area of
 do is decided by dotted permission strings such as `levels.rate` or
 `users.ban.*`, granted through roles and per-user overrides.
 
+## Scalability
+
+<img width="1760" height="1310" alt="image" src="https://github.com/user-attachments/assets/073d5f14-5412-4592-96e6-0ceee33f0075" />
+
+*Ran against an emulated 10k player, 100k level GDPS on an AMD Ryzen 5800X.*
+
 ## Layout
 
 ```
@@ -48,14 +54,6 @@ settings changes) are announced on Redis Pub/Sub channels named
 `poltergeist:*`, each message carrying `"component": "poltergeist"`. The
 envelope and the event catalogue are documented in
 [poltergeist-core](https://github.com/RealistikGDPS/poltergeist-core#events).
-
-## Benchmarks
-
-Against [GMDprivateServer](https://github.com/Cvolton/GMDprivateServer) on a
-4 vCPU machine, both behind nginx on MySQL 8.4 with 2 workers. Simulated "realistic" workload.
-
-<img width="1760" height="880" alt="image" src="https://github.com/user-attachments/assets/8b2bcabe-9385-44c7-b190-df34ec31e41a" />
-
 
 ## Development
 
