@@ -574,7 +574,7 @@ dev = [
 [[package]]
 name = "poltergeist-core"
 version = "0.1.0"
-source = { git = "https://github.com/RealistikGDPS/poltergeist-core#9bb5c360f2c1599403c9de37e4a4bd108be13f9f" }
+source = { git = "https://github.com/RealistikGDPS/poltergeist-core#3c2e5cbf5364e6301eb3e54f1bdc6fbf41014b53" }
 dependencies = [
     { name = "bcrypt" },
     { name = "beerstream1", version = "0.1.0", source = { url = "https://github.com/RealistikGDPS/BeerStream1/releases/download/v0.1.0/beerstream1-0.1.0-cp314-cp314-manylinux_2_28_aarch64.whl" }, marker = "platform_machine == 'aarch64'" },
